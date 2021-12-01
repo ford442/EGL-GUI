@@ -31,7 +31,7 @@ static GLfloat mouseRPressed=0.0f;
 static void renderFrame(){
 Uint32 buttons;
 SDL_PumpEvents();
-buttons=SDL_GetMouseState(&x, &y);
+buttons=SDL_GetMouseState();
 if((buttons & SDL_BUTTON_LMASK)!=0){
 mouseLPressed=1.0f;
 glClearColor(0.0f,1.0f,0.0f,1.0f);
