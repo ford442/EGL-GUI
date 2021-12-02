@@ -35,12 +35,14 @@ Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
 buttons=SDL_GetMouseState(&x,&y);
+float green=mouseX/viewportSizeX;
+float red=mouseY/viewportSizeY;
 if((buttons & SDL_BUTTON_LMASK)!=0){
 mouseLPressed=1.0f;
-glClearColor(0.0f,(mouseX/viewportSizeX),0.0f,1.0f);
+glClearColor(0.0f,green,0.0f,1.0f);
 }else{
 mouseLPressed=0.0f;
-glClearColor((mouseY/viewportSizeY),0.0f,0.0f,1.0f);
+glClearColor(red,0.0f,0.0f,1.0f);
 }
 glClear(GL_COLOR_BUFFER_BIT);
 eglSwapBuffers(display,surface);
