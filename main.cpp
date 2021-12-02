@@ -29,6 +29,17 @@ static GLfloat mouseLPressed=0.0f;
 static GLfloat mouseRPressed=0.0f;
 
 static void renderFrame(){
+float radius=0.3;
+int num_seg=5;
+glBegin(GL_TRIANGLE_FAN);
+glVertex2f(0,0);
+for(i=0;i<num_seg;i++){
+float u=(float)i/(float)(num_seg-1)*umax;
+float theta=u*2.0*M_PI;
+glVertex2f(cos(theta)*radius,sin(theta)*radius);
+}
+glEnd();
+  
 Uint32 buttons;
   int x,y;
 SDL_PumpEvents();
