@@ -35,6 +35,8 @@ Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
 buttons=SDL_GetMouseState(&x,&y);
+mouseX=x;
+mouseY=viewportSizeY-y;
 float green=mouseX/viewportSizeX;
 float red=mouseY/viewportSizeY;
 if((buttons & SDL_BUTTON_LMASK)!=0){
