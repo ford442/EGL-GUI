@@ -27,18 +27,20 @@ static GLfloat mouseX=0.0f;
 static GLfloat mouseY=0.0f;
 static GLfloat mouseLPressed=0.0f;
 static GLfloat mouseRPressed=0.0f;
+static GLfloat viewportSizeX=0.0f;
+static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
 Uint32 buttons;
-  int x,y;
+int x,y;
 SDL_PumpEvents();
 buttons=SDL_GetMouseState(&x,&y);
 if((buttons & SDL_BUTTON_LMASK)!=0){
 mouseLPressed=1.0f;
-glClearColor(0.0f,1.0f,0.0f,1.0f);
+glClearColor(0.0f,(mouseX/viewportSizeX),0.0f,1.0f);
 }else{
 mouseLPressed=0.0f;
-glClearColor(1.0f,0.0f,0.0f,1.0f);
+glClearColor((mouseY/viewportSizeY),0.0f,0.0f,1.0f);
 }
 glClear(GL_COLOR_BUFFER_BIT);
 eglSwapBuffers(display,surface);
@@ -106,6 +108,9 @@ SDL_SetWindowTitle(win,"1ink.us - GUI");
 SDL_Log("GL_VERSION: %s",glGetString(GL_VERSION));
 SDL_Log("GLSL_VERSION: %s",glGetString(GL_SHADING_LANGUAGE_VERSION));
 SDL_Init(SDL_INIT_EVENTS);
+glViewport(0,0,w,h);
+viewportSizeX=w;
+viewportSizeY=h;
 glClearColor(0.0f,0.0f,0.0f,1.0f);
 emscripten_set_main_loop((void (*)())renderFrame,0,0);
 }
