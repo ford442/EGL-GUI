@@ -14,6 +14,73 @@
 #include <emscripten/html5.h>
 #include <SDL2/SDL.h>
 using std::string;
+#define __SHADER_H__
+
+GLuint shaderProgLoad(const char *vertFilename,const char *fragFilename);
+void shaderProgDestroy(GLuint shaderProg);
+static size_t fileGetLength(FILE *file){
+size_t length;
+size_t currPos=ftell(file);
+fseek(file,0,SEEK_END);
+length=ftell(file);
+fseek(file,currPos,SEEK_SET);
+return length;
+}
+static GLuint shaderLoad(const char *filename,GLenum shaderType){
+FILE *file=fopen(filename,"r");
+size_t length=fileGetLength(file);
+GLchar *shaderSrc=(GLchar *)calloc(length+1,1);
+fread(shaderSrc,1,length,file);
+fclose(file);
+file=NULL;
+GLuint shader=glCreateShader(shaderType);
+glShaderSource(shader,1,(const GLchar**)&shaderSrc,NULL);
+free(shaderSrc);
+shaderSrc=NULL;
+glCompileShader(shader);
+return shader;
+}
+
+static void shaderDestroy(GLuint shaderID){
+glDeleteShader(shaderID);
+}
+
+GLuint shaderProgLoad(const char *vertFilename,const char *fragFilename){
+GLuint vertShader=shaderLoad(vertFilename,GL_VERTEX_SHADER);
+GLuint fragShader=shaderLoad(fragFilename,GL_FRAGMENT_SHADER);
+GLuint shaderProg=glCreateProgram();
+glAttachShader(shaderProg,vertShader);
+glAttachShader(shaderProg,fragShader);
+glLinkProgram(shaderProg);
+shaderDestroy(vertShader);
+shaderDestroy(fragShader);
+return shaderProg;
+}
+ 
+void shaderProgDestroy(GLuint shaderProg) {
+glDeleteProgram(shaderProg);
+}
+ 
+typedef struct Vertex_s {
+float position[2];
+} Vertex;
+ 
+GLuint vboCreate(const Vertex *vertices,GLuint numVertices);
+void vboFree(GLuint vbo);
+GLuint vboCreate(const Vertex *vertices, GLuint numVertices) {
+GLuint vbo;
+int nBuffers=1;
+glGenBuffers(nBuffers,&vbo);
+glBindBuffer(GL_ARRAY_BUFFER,vbo);
+glBufferData(GL_ARRAY_BUFFER,sizeof(Vertex) * numVertices, vertices, GL_STATIC_DRAW);
+glBindBuffer(GL_ARRAY_BUFFER,0);
+SDL_Log("VBO: %d\n, vbo");
+return vbo;
+}
+
+void vboFree(GLuint vbo) {
+glDeleteBuffers(1, &vbo);
+}
 
 static EGLDisplay display;
 static EGLContext contextegl;
@@ -30,7 +97,7 @@ static GLfloat mouseRPressed=0.0f;
 
 static void renderFrame(){
 Uint32 buttons;
- int x,y;
+int x,y;
 SDL_PumpEvents();
 buttons=SDL_GetMouseState(&x,&y);
 if((buttons & SDL_BUTTON_LMASK)!=0){
@@ -41,20 +108,20 @@ mouseLPressed=0.0f;
 glClearColor(1.0f,0.0f,0.0f,1.0f);
 }
 glClear(GL_COLOR_BUFFER_BIT);
-     glBegin(GL_POLYGON);
-                glColor3f(0.0f, 0.0f, 1.0f);
-                glVertex3f(-0.72f,0.8f, 0.0f); //a1
-                glVertex3f(-0.52f,   0.8f,0.0f);  //z
-                glVertex3f(-0.35f,   0.64f, 0.0f); //b1
-                glVertex3f(-0.3f,   0.48f, 0.0f); //d1
-                glVertex3f(-0.35f,   0.3f, 0.0f); //e1
-                glVertex3f(-0.52f, 0.16f, 0.0f); //l1
-                glVertex3f(-0.72f, 0.16f, 0.0f); //m1
-                glVertex3f(-0.9f, 0.3f, 0.0f); //o1
-                glVertex3f(-0.95f, 0.48f, 0.0f); //p1
-                glVertex3f(-0.9f, 0.64f, 0.0f); //c1
-
-                glEnd();
+glUseProgram(shaderProg);
+const Vertex vertices[]={
+{0.0f,-0.9f},
+{0.9f,0.9f},
+{-0.9f,0.9f}
+};
+GLsizei vertSize=sizeof(vertices[0]);
+GLsizei numVertices=sizeof(vertices)/vertSize;
+GLuint triangleVBO=vboCreate(vertices,numVertices);
+GLuint positionIdx=0;
+glBindBuffer(GL_ARRAY_BUFFER, triangleVBO);
+glVertexAttribPointer(positionIdx,2,GL_FLOAT,GL_FALSE,sizeof(Vertex),(const GLvoid*)0);
+glEnableVertexAttribArray(positionIdx);
+glDrawArrays(GL_TRIANGLES,0,numVertices);
 eglSwapBuffers(display,surface);
 }
 
@@ -117,6 +184,7 @@ int w=h;
 win=SDL_CreateWindow("Shadertoy",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,w,h,0);
 glCtx=&contextegl;
 SDL_SetWindowTitle(win,"1ink.us - GUI");
+GLuint shaderProg=shaderProgLoad("Simple2D.vert","Simple2D.frag");
 SDL_Log("GL_VERSION: %s",glGetString(GL_VERSION));
 SDL_Log("GLSL_VERSION: %s",glGetString(GL_SHADING_LANGUAGE_VERSION));
 SDL_Init(SDL_INIT_EVENTS);
