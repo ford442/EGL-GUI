@@ -31,8 +31,9 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
-float abstime=(float)SDL_GetTicks()/1000;
-auto white=0.5+((float)(abstime-(round(abstime/500)*500))/100);
+float abstime=(float)SDL_GetTicks();
+auto white=abstime-(round(abstime/5)*5);
+white=white/10;
 Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
@@ -43,15 +44,15 @@ float green=mouseX/viewportSizeX;
 float red=mouseY/viewportSizeY;
 if((buttons & SDL_BUTTON_LMASK)!=0){
 mouseLPressed=1.0f;
-glClearColor(0.0f,green,0.0f,white);
+glClearColor(0.0f,green,0.0f,1.0f);
 if(mouseX>=0.5){
-glClearColor(0.0f,0.0f,green,1.0f);
+glClearColor(white,0.0f,green,1.0f);
 }
 }else{
 mouseLPressed=0.0f;
 glClearColor(red,0.0f,0.0f,1.0f);
 if(mouseY>=0.5){
-glClearColor(0.0f,green,green,1.0f);
+glClearColor(0.0f,white,green,1.0f);
 }
 }
 glClear(GL_COLOR_BUFFER_BIT);
