@@ -29,19 +29,8 @@ static GLfloat mouseLPressed=0.0f;
 static GLfloat mouseRPressed=0.0f;
 
 static void renderFrame(){
-float radius=0.3;
-int num_seg=5;
-glBegin(GL_TRIANGLE_FAN);
-glVertex2f(0,0);
-for(i=0;i<num_seg;i++){
-float u=(float)i/(float)(num_seg-1)*umax;
-float theta=u*2.0*M_PI;
-glVertex2f(cos(theta)*radius,sin(theta)*radius);
-}
-glEnd();
-  
 Uint32 buttons;
-  int x,y;
+ int x,y;
 SDL_PumpEvents();
 buttons=SDL_GetMouseState(&x,&y);
 if((buttons & SDL_BUTTON_LMASK)!=0){
@@ -52,6 +41,20 @@ mouseLPressed=0.0f;
 glClearColor(1.0f,0.0f,0.0f,1.0f);
 }
 glClear(GL_COLOR_BUFFER_BIT);
+     glBegin(GL_POLYGON);
+                glColor3f(0.0f, 0.0f, 1.0f);
+                glVertex3f(-0.72f,0.8f, 0.0f); //a1
+                glVertex3f(-0.52f,   0.8f,0.0f);  //z
+                glVertex3f(-0.35f,   0.64f, 0.0f); //b1
+                glVertex3f(-0.3f,   0.48f, 0.0f); //d1
+                glVertex3f(-0.35f,   0.3f, 0.0f); //e1
+                glVertex3f(-0.52f, 0.16f, 0.0f); //l1
+                glVertex3f(-0.72f, 0.16f, 0.0f); //m1
+                glVertex3f(-0.9f, 0.3f, 0.0f); //o1
+                glVertex3f(-0.95f, 0.48f, 0.0f); //p1
+                glVertex3f(-0.9f, 0.64f, 0.0f); //c1
+
+                glEnd();
 eglSwapBuffers(display,surface);
 }
 
