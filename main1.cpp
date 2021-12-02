@@ -31,20 +31,28 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
+float abstime=(float)SDL_GetTicks()/1000;
+auto white=0.5+((float)(abstime-(round(abstime/500)*500))/100);
 Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
 buttons=SDL_GetMouseState(&x,&y);
 mouseX=x;
-mouseY=viewportSizeY-y;
+mouseY=y;
 float green=mouseX/viewportSizeX;
 float red=mouseY/viewportSizeY;
 if((buttons & SDL_BUTTON_LMASK)!=0){
 mouseLPressed=1.0f;
-glClearColor(0.0f,green,0.0f,1.0f);
+glClearColor(0.0f,green,0.0f,white;
+if(mouseX>=0.5){
+glClearColor(0.0f,0.0f,green,1.0f);
+}
 }else{
 mouseLPressed=0.0f;
 glClearColor(red,0.0f,0.0f,1.0f);
+if(mouseY>=0.5){
+glClearColor(0.0f,green,green,1.0f);
+}
 }
 glClear(GL_COLOR_BUFFER_BIT);
 eglSwapBuffers(display,surface);
