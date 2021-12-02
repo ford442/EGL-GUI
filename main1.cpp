@@ -43,7 +43,7 @@ float green=mouseX/viewportSizeX;
 float red=mouseY/viewportSizeY;
 if((buttons & SDL_BUTTON_LMASK)!=0){
 mouseLPressed=1.0f;
-glClearColor(0.0f,green,0.0f,white;
+glClearColor(0.0f,green,0.0f,white);
 if(mouseX>=0.5){
 glClearColor(0.0f,0.0f,green,1.0f);
 }
