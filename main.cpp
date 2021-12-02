@@ -74,7 +74,6 @@ glGenBuffers(nBuffers,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
 glBufferData(GL_ARRAY_BUFFER,sizeof(Vertex) * numVertices, vertices, GL_STATIC_DRAW);
 glBindBuffer(GL_ARRAY_BUFFER,0);
-SDL_Log("VBO: %d\n, vbo");
 return vbo;
 }
 
@@ -96,6 +95,7 @@ static GLfloat mouseLPressed=0.0f;
 static GLfloat mouseRPressed=0.0f;
 
 static void renderFrame(){
+GLuint shaderProg=shaderProgLoad("Simple2D.vert","Simple2D.frag");
 Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
@@ -184,7 +184,6 @@ int w=h;
 win=SDL_CreateWindow("Shadertoy",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,w,h,0);
 glCtx=&contextegl;
 SDL_SetWindowTitle(win,"1ink.us - GUI");
-GLuint shaderProg=shaderProgLoad("Simple2D.vert","Simple2D.frag");
 SDL_Log("GL_VERSION: %s",glGetString(GL_VERSION));
 SDL_Log("GLSL_VERSION: %s",glGetString(GL_SHADING_LANGUAGE_VERSION));
 SDL_Init(SDL_INIT_EVENTS);
