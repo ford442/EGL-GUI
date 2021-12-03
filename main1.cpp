@@ -59,7 +59,7 @@ static const char fragment_shader_footer_gles3[]=
 
 static const char* common_shader_header=common_shader_header_gles3;
 static const char* vertex_shader_body=vertex_shader_body_gles3;
-static const char* fragment_shader_header=common_shader_header_gles3;
+static const char* fragment_shader_header=fragment_shader_header_gles3;
 static const char* fragment_shader_footer=fragment_shader_footer_gles3;
 static const char* default_fragment_shader=fragment_shader_body_gles3;
 static const GLfloat vertices[]={
@@ -123,9 +123,7 @@ mouseLPressed=0.0f;
 glClearColor(red,0.0f,0.0f,1.0f);
 if(mouseY>=0.5){
 glClearColor(0.0f,white,green,1.0f);
-}
-}
-  /*
+}}
 glGenBuffers(1,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
 glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
@@ -135,7 +133,6 @@ glVertexAttribPointer(attrib_position,2,GL_FLOAT,GL_FALSE,0,0);
 glEnableVertexAttribArray(attrib_position);
 glUseProgram(shader_program);
 glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-*/
 eglSwapBuffers(display,surface);
 }
 
@@ -158,7 +155,6 @@ EGL_NONE
 };
 
 static void strt(){
-/*
 GLuint vtx,frag;
 char *fileloc="/frag";
 string program_sourceF=read_file_into_str(fileloc);
@@ -183,7 +179,6 @@ glDeleteShader(vtx);
 glDeleteShader(frag);
 glReleaseShaderCompiler();
 glUseProgram(shader_program);
-*/
 SDL_GL_SetAttribute(SDL_GL_RED_SIZE,32);
 SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,32);
 SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,32);
