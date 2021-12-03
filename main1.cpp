@@ -125,6 +125,7 @@ glClearColor(0.0f,white,green,1.0f);
 }
 }
 glClear(GL_COLOR_BUFFER_BIT);
+  /*
 glGenBuffers(1,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
 glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
@@ -134,6 +135,7 @@ glVertexAttribPointer(attrib_position,2,GL_FLOAT,GL_FALSE,0,0);
 glEnableVertexAttribArray(attrib_position);
 glUseProgram(shader_program);
 glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+*/
 eglSwapBuffers(display,surface);
 }
 
@@ -156,6 +158,7 @@ EGL_NONE
 };
 
 static void strt(){
+/*
 GLuint vtx,frag;
 char *fileloc="/frag";
 string program_sourceF=read_file_into_str(fileloc);
@@ -180,7 +183,7 @@ glDeleteShader(vtx);
 glDeleteShader(frag);
 glReleaseShaderCompiler();
 glUseProgram(shader_program);
-  
+*/
 SDL_GL_SetAttribute(SDL_GL_RED_SIZE,32);
 SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,32);
 SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,32);
@@ -227,7 +230,7 @@ SDL_Init(SDL_INIT_EVENTS);
 glViewport(0,0,w,h);
 viewportSizeX=w;
 viewportSizeY=h;
-glClearColor(0.0f,0.0f,0.0f,1.0f);
+glClearColor(0.6f,0.6f,1.0f,1.0f);
 emscripten_set_main_loop((void (*)())renderFrame,0,0);
 }
 extern "C" {
