@@ -74,10 +74,10 @@ static const char* fragment_shader_header=fragment_shader_header_gles3;
 static const char* fragment_shader_footer=fragment_shader_footer_gles3;
 
 static const GLfloat vertices[]={
--0.6f,-1.6f,
-1.6f,-1.6f,
--1.6f,1.6f,
-1.6f,1.6f
+-0.6f,-0.6f,
+0.6f,-0.6f,
+-0.6f,0.6f,
+0.6f,0.6f
 };
 
 static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
