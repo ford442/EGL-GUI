@@ -103,7 +103,7 @@ GLuint vbo,vbu;
 attrib_position=0;
 float abstime=(float)SDL_GetTicks();
 auto white=abstime-(round(abstime/5000)*5000);
-white=white/10;
+white=0.2f+(white/10)+(white/100)+(white/1000);
 Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
