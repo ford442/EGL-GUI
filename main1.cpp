@@ -98,10 +98,11 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
+glClear(GL_COLOR_BUFFER_BIT);
 GLuint vbo,vbu;
 attrib_position=0;
 float abstime=(float)SDL_GetTicks();
-auto white=abstime-(round(abstime/5)*5);
+auto white=abstime-(round(abstime/5000)*5000);
 white=white/10;
 Uint32 buttons;
 int x,y;
@@ -124,7 +125,6 @@ if(mouseY>=0.5){
 glClearColor(0.0f,white,green,1.0f);
 }
 }
-glClear(GL_COLOR_BUFFER_BIT);
   /*
 glGenBuffers(1,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
