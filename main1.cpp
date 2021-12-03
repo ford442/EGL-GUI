@@ -43,32 +43,25 @@ return NULL;
 
 static const char common_shader_header_gles3[]=
 "#version 300 es \n"
-"precision highp float;in vec4 colour;out vec4 fragColour;void main(){fragColour=colour;} \n";
+"precision highp float;} \n";
+
+  static const char fragment_shader_body_gles3[]=
+"in vec4 colour;out vec4 fragColour;void main(){fragColour=colour;} \n";
 
 static const char vertex_shader_body_gles3[]=
 "in vec2 vertPos;out vec4 colour;const vec4 white=vec4(1.0);const vec4 funkyColour=vec4(0.33);void main(){colour=white;gl_Position=vec4(vertPos, 0.0,1.0);} \n";
 
 static const char fragment_shader_header_gles3[]=
-"uniform vec3 iResolution;"
-"uniform float iTime;"
-"uniform float iChannelTime[4];"
-"uniform vec4 iMouse;"
-"uniform vec4 iDate;"
-"uniform vec3 iChannelResolution[4];"
-"uniform sampler2D iChannel0;"
-"uniform sampler2D iChannel1;"
-"uniform sampler2D iChannel2;"
-"uniform sampler2D iChannel3;"
-"out vec4 fragColor; \n";
+" \n";
 
 static const char fragment_shader_footer_gles3[]=
-"\n void main(){mainImage(fragColor, gl_FragCoord.xy);} \n";
+" \n";
 
 static const char* common_shader_header=common_shader_header_gles3;
 static const char* vertex_shader_body=vertex_shader_body_gles3;
 static const char* fragment_shader_header=fragment_shader_header_gles3;
 static const char* fragment_shader_footer=fragment_shader_footer_gles3;
-
+static const char* default_fragment_shader=fragment_shader_body_gles3;
 static const GLfloat vertices[]={
 -0.6f,-0.6f,
 0.6f,-0.6f,
