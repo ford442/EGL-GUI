@@ -43,7 +43,7 @@ return NULL;
 
 static const char common_shader_header_gles3[]=
 "#version 300 es \n"
-"precision highp float;} \n";
+"precision highp float; \n";
 
   static const char fragment_shader_body_gles3[]=
 "in vec4 colour;out vec4 fragColour;void main(){fragColour=colour;} \n";
@@ -68,6 +68,8 @@ static const GLfloat vertices[]={
 -0.6f,0.6f,
 0.6f,0.6f
 };
+static GLuint shader_program;
+static GLint attrib_position;
 
 static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
 static GLuint shader;
@@ -88,7 +90,6 @@ static EmscriptenWebGLContextAttributes attr;
 static struct{SDL_AudioSpec spec;Uint8* snd;Uint32 slen;int pos;}wave;
 SDL_Window *win;
 SDL_GLContext *glCtx;
-static GLuint shader_program;
 static GLfloat mouseX=0.0f;
 static GLfloat mouseY=0.0f;
 static GLfloat mouseLPressed=0.0f;
@@ -98,7 +99,7 @@ static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
 GLuint vbo,vbu;
-GLuint attrib_position=0;
+attrib_position=0;
 float abstime=(float)SDL_GetTicks();
 auto white=abstime-(round(abstime/5)*5);
 white=white/10;
