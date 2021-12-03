@@ -13,7 +13,7 @@ ff.onload=function(oEvent){
 var arrayBuffer=ff.response;
 if(arrayBuffer){
 var fil=new Uint8ClampedArray(arrayBuffer);
-FS.writeFile('/shader/Simple2D.frag',fil);
+FS.writeFile('/frag',fil);
 }}
 ff.send(null);
 ff2.open("GET",pth2,true);
@@ -22,7 +22,7 @@ ff2.onload=function(oEvent){
 var arrayBuffer2=ff2.response;
 if(arrayBuffer2){
 var fil=new Uint8ClampedArray(arrayBuffer2);
-FS.writeFile('/shader/Simple2D.vert',fil);
+FS.writeFile('/vert',fil);
 }}
 ff2.send(null);
 ff3.open("GET",pth3,true);
