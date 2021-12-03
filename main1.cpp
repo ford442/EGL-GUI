@@ -43,10 +43,10 @@ return NULL;
 
 static const char common_shader_header_gles3[]=
 "#version 300 es \n"
-"precision highp float; \n";
+"precision mediump float; \n";
 
   static const char fragment_shader_body_gles3[]=
-"in vec4 colour;out vec4 fragColour;void main(){fragColour=colour;} \n";
+"in vec4 color;out vec4 fragColor;void main(){fragColor=color;} \n";
 
 static const char vertex_shader_body_gles3[]=
 "in vec2 vertPos;out vec4 colour;const vec4 white=vec4(1.0);const vec4 funkyColour=vec4(0.33);void main(){colour=white;gl_Position=vec4(vertPos, 0.0,1.0);} \n";
