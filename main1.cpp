@@ -108,6 +108,7 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
+GLuint attrib_position=0;
 float abstime=(float)SDL_GetTicks();
 auto white=abstime-(round(abstime/5)*5);
 white=white/10;
