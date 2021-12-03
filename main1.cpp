@@ -92,7 +92,6 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
-
 glClear(GL_COLOR_BUFFER_BIT);
 GLuint vbo,vbu;
 attrib_position=0;
