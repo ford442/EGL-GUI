@@ -64,9 +64,9 @@ static const char* default_fragment_shader=fragment_shader_body_gles3;
 
 static GLuint shader_program;
 static GLint attrib_position;
-static GLuint shader;
 
 static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
+GLuint shader;
 GLsizei i,srclens[nsources];
 for (i=0;i<nsources;++i){
 srclens[i]=(GLsizei)strlen(sources[i]);
