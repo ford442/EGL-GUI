@@ -69,7 +69,7 @@ static const char fragment_shader_footer_gles3[]=
 "\n void main(){mainImage(fragColor, gl_FragCoord.xy);} \n";
 
 static const char* common_shader_header=common_shader_header_gles3;
-static const char* vertex_shader_body=vertex_shader_body_gles3;
+// static const char* vertex_shader_body=vertex_shader_body_gles3;
 static const char* fragment_shader_header=fragment_shader_header_gles3;
 static const char* fragment_shader_footer=fragment_shader_footer_gles3;
 
@@ -173,7 +173,7 @@ const char* default_fragment_shader=program_sourceF.c_str();
 const char *sources[4];
 char *fileloc2="/vert";
 string program_sourceV=read_file_into_str(fileloc2);
-vertex_shader_body=program_sourceV.c_str();
+const char* vertex_shader_body=program_sourceV.c_str();
 sources[0]=common_shader_header;
 sources[1]=vertex_shader_body;
 vtx=compile_shader(GL_VERTEX_SHADER,2,sources);
