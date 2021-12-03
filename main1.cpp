@@ -158,7 +158,7 @@ GLuint vtx,frag;
 // char *fileloc="/frag";
 // string program_sourceF=read_file_into_str(fileloc);
 // const char* default_fragment_shader=program_sourceF.c_str();
-// const char *sources[4];
+const char *sources[4];
 // char *fileloc2="/vert";
 // string program_sourceV=read_file_into_str(fileloc2);
 // const char* vertex_shader_body=program_sourceV.c_str();
