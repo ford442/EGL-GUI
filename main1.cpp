@@ -42,14 +42,13 @@ return NULL;
 }
 
 static const char common_shader_header_gles3[]=
-"#version 300 es \n"
-"precision mediump float; \n";
+"#version 300 es\n";
 
-  static const char fragment_shader_body_gles3[]=
+static const char fragment_shader_body_gles3[]=
 "in vec4 color;out vec4 fragColor;void main(){fragColor=color;} \n";
 
 static const char vertex_shader_body_gles3[]=
-"in vec2 vertPos;out vec4 colour;const vec4 white=vec4(1.0);const vec4 funkyColour=vec4(0.33);void main(){colour=white;gl_Position=vec4(vertPos, 0.0,1.0);} \n";
+"in vec2 vertPos;out vec4 color;const vec4 white=vec4(1.0);const vec4 funkyColor=vec4(0.33);void main(){color=white;gl_Position=vec4(vertPos,0.0,1.0);} \n";
 
 static const char fragment_shader_header_gles3[]=
 " \n";
@@ -62,12 +61,7 @@ static const char* vertex_shader_body=vertex_shader_body_gles3;
 static const char* fragment_shader_header=fragment_shader_header_gles3;
 static const char* fragment_shader_footer=fragment_shader_footer_gles3;
 static const char* default_fragment_shader=fragment_shader_body_gles3;
-static const GLfloat vertices[]={
--0.6f,-0.6f,
-0.6f,-0.6f,
--0.6f,0.6f,
-0.6f,0.6f
-};
+
 static GLuint shader_program;
 static GLint attrib_position;
 
@@ -98,6 +92,7 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
+
 glClear(GL_COLOR_BUFFER_BIT);
 GLuint vbo,vbu;
 attrib_position=0;
@@ -124,6 +119,12 @@ glClearColor(red,0.0f,0.0f,1.0f);
 if(mouseY>=0.5){
 glClearColor(0.0f,white,green,1.0f);
 }}
+static const GLfloat vertices[]={
+-0.6f,-0.6f,
+white,-0.6f,
+-0.6f,0.6f,
+0.6f,green
+};
 glGenBuffers(1,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
 glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
