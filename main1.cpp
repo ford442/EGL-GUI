@@ -14,6 +14,83 @@
 #include <emscripten/html5.h>
 #include <SDL2/SDL.h>
 using std::string;
+static const char *read_file_into_str(const char *filename){
+char *result=NULL;
+long length=0;
+FILE *file=fopen(filename,"r");
+if(file){
+int status=fseek(file,0,SEEK_END);
+if(status!=0){
+fclose(file);
+return NULL;
+}
+length=ftell(file);
+status=fseek(file,0,SEEK_SET);
+if(status!=0){
+fclose(file);
+return NULL;
+}
+result=static_cast<char*>(malloc((length+1)*sizeof(char)));
+if(result){
+size_t actual_length=fread(result,sizeof(char),length,file);
+result[actual_length++]={'\0'};
+} 
+fclose(file);
+return result;
+}
+return NULL;
+}
+
+static const char common_shader_header_gles3[]=
+"#version 300 es \n"
+"precision highp float; \n";
+
+static const char vertex_shader_body_gles3[]=
+"layout(location=0) in vec4 iPosition;"
+"void main(){"
+"gl_Position=iPosition;"
+"} \n";
+
+
+static const char fragment_shader_header_gles3[]=
+"uniform vec3 iResolution;"
+"uniform float iTime;"
+"uniform float iChannelTime[4];"
+"uniform vec4 iMouse;"
+"uniform vec4 iDate;"
+"uniform vec3 iChannelResolution[4];"
+"uniform sampler2D iChannel0;"
+"uniform sampler2D iChannel1;"
+"uniform sampler2D iChannel2;"
+"uniform sampler2D iChannel3;"
+"out vec4 fragColor; \n";
+
+static const char fragment_shader_footer_gles3[]=
+"\n void main(){mainImage(fragColor, gl_FragCoord.xy);} \n";
+
+static const char* common_shader_header=common_shader_header_gles3;
+static const char* vertex_shader_body=vertex_shader_body_gles3;
+static const char* fragment_shader_header=fragment_shader_header_gles3;
+static const char* fragment_shader_footer=fragment_shader_footer_gles3;
+
+static const GLfloat vertices[]={
+-0.6f,-1.6f,
+1.6f,-1.6f,
+-1.6f,1.6f,
+1.6f,1.6f
+};
+
+static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
+static GLuint shader;
+GLsizei i,srclens[nsources];
+for (i=0;i<nsources;++i){
+srclens[i]=(GLsizei)strlen(sources[i]);
+}
+shader=glCreateShader(type);
+glShaderSource(shader,nsources,sources,srclens);
+glCompileShader(shader);
+return shader;
+}
 
 static EGLDisplay display;
 static EGLContext contextegl;
@@ -56,6 +133,16 @@ glClearColor(0.0f,white,green,1.0f);
 }
 }
 glClear(GL_COLOR_BUFFER_BIT);
+  glGenBuffers(1,&vbo);
+glBindBuffer(GL_ARRAY_BUFFER,vbo);
+glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
+glGenVertexArrays(1,&vbu);
+glBindVertexArray(vbu);
+glVertexAttribPointer(attrib_position,2,GL_FLOAT,GL_FALSE,0,0);
+glEnableVertexAttribArray(attrib_position);
+glUseProgram(shader_program);
+  glDrawArrays(GL_TRIANGLE_STRIP,0,4);
+
 eglSwapBuffers(display,surface);
 }
 
@@ -78,6 +165,31 @@ EGL_NONE
 };
 
 static void strt(){
+GLuint vtx,frag;
+char *fileloc="/frag";
+string program_sourceF=read_file_into_str(fileloc);
+const char* default_fragment_shader=program_sourceF.c_str();
+const char *sources[4];
+char *fileloc2="/vert";
+string program_sourceV=read_file_into_str(fileloc2);
+vertex_shader_body=program_sourceV.c_str();
+sources[0]=common_shader_header;
+sources[1]=vertex_shader_body;
+vtx=compile_shader(GL_VERTEX_SHADER,2,sources);
+sources[0]=common_shader_header;
+sources[1]=fragment_shader_header;
+sources[2]=default_fragment_shader;
+sources[3]=fragment_shader_footer;
+frag=compile_shader(GL_FRAGMENT_SHADER,4,sources);
+shader_program=glCreateProgram();
+glAttachShader(shader_program,vtx);
+glAttachShader(shader_program,frag);
+glLinkProgram(shader_program);
+glDeleteShader(vtx);
+glDeleteShader(frag);
+glReleaseShaderCompiler();
+glUseProgram(shader_program);
+  
 SDL_GL_SetAttribute(SDL_GL_RED_SIZE,32);
 SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,32);
 SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,32);
@@ -134,6 +246,7 @@ strt();
 int main(){
 EM_ASM({
 FS.mkdir("/");
+FS.mkdir("/shader");
 });
 return 1;
 }
