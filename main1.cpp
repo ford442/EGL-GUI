@@ -64,13 +64,14 @@ static const char* default_fragment_shader=fragment_shader_body_gles3;
 
 static GLuint shader_program;
 static GLint attrib_position;
+static GLuint shader;
 
 static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
 GLsizei i,srclens[nsources];
 for (i=0;i<nsources;++i){
 srclens[i]=(GLsizei)strlen(sources[i]);
 }
-static GLuint shader=glCreateShader(type);
+shader=glCreateShader(type);
 glShaderSource(shader,nsources,sources,srclens);
 glCompileShader(shader);
 return shader;
@@ -89,10 +90,10 @@ static GLfloat mouseLPressed=0.0f;
 static GLfloat mouseRPressed=0.0f;
 static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
+GLuint vbo,vbu;
 
 static void renderFrame(){
 glClear(GL_COLOR_BUFFER_BIT);
-GLuint vbo,vbu;
 attrib_position=0;
 float abstime=(float)SDL_GetTicks();
 auto white=abstime-(round(abstime/500)*500);
