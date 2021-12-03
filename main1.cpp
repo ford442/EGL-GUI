@@ -245,7 +245,6 @@ strt();
 }}
 int main(){
 EM_ASM({
-FS.mkdir("/");
 FS.mkdir("/shader");
 });
 return 1;
