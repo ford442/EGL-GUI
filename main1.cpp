@@ -101,9 +101,9 @@ static void renderFrame(){
 glClear(GL_COLOR_BUFFER_BIT);
 GLuint vbo,vbu;
 attrib_position=0;
-float abstime=(float)SDL_GetTicks();
+double abstime=(double)SDL_GetTicks();
 auto white=abstime-(round(abstime/500)*500);
-white=abstime/white;
+white=(abstime/white)/100;
 Uint32 buttons;
 int x,y;
 SDL_PumpEvents();
