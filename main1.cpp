@@ -108,6 +108,7 @@ static GLfloat viewportSizeX=0.0f;
 static GLfloat viewportSizeY=0.0f;
 
 static void renderFrame(){
+GLuint vbo,vbu;
 GLuint attrib_position=0;
 float abstime=(float)SDL_GetTicks();
 auto white=abstime-(round(abstime/5)*5);
@@ -134,7 +135,7 @@ glClearColor(0.0f,white,green,1.0f);
 }
 }
 glClear(GL_COLOR_BUFFER_BIT);
-  glGenBuffers(1,&vbo);
+glGenBuffers(1,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
 glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
 glGenVertexArrays(1,&vbu);
@@ -142,8 +143,7 @@ glBindVertexArray(vbu);
 glVertexAttribPointer(attrib_position,2,GL_FLOAT,GL_FALSE,0,0);
 glEnableVertexAttribArray(attrib_position);
 glUseProgram(shader_program);
-  glDrawArrays(GL_TRIANGLE_STRIP,0,4);
-
+glDrawArrays(GL_TRIANGLE_STRIP,0,4);
 eglSwapBuffers(display,surface);
 }
 
