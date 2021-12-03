@@ -66,12 +66,11 @@ static GLuint shader_program;
 static GLint attrib_position;
 
 static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
-static GLuint shader;
 GLsizei i,srclens[nsources];
 for (i=0;i<nsources;++i){
 srclens[i]=(GLsizei)strlen(sources[i]);
 }
-shader=glCreateShader(type);
+static GLuint shader=glCreateShader(type);
 glShaderSource(shader,nsources,sources,srclens);
 glCompileShader(shader);
 return shader;
@@ -156,12 +155,12 @@ EGL_NONE
 
 static void strt(){
 GLuint vtx,frag;
-char *fileloc="/frag";
-string program_sourceF=read_file_into_str(fileloc);
+// char *fileloc="/frag";
+// string program_sourceF=read_file_into_str(fileloc);
 // const char* default_fragment_shader=program_sourceF.c_str();
-const char *sources[4];
-char *fileloc2="/vert";
-string program_sourceV=read_file_into_str(fileloc2);
+// const char *sources[4];
+// char *fileloc2="/vert";
+// string program_sourceV=read_file_into_str(fileloc2);
 // const char* vertex_shader_body=program_sourceV.c_str();
 sources[0]=common_shader_header;
 sources[1]=vertex_shader_body;
