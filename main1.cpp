@@ -17,6 +17,42 @@ using std::string;
 static const char *read_file_into_str(const char *filename){
 char *result=NULL;
 long length=0;
+  static EGLDisplay display;
+static EGLContext contextegl;
+static EGLSurface surface;
+static EmscriptenWebGLContextAttributes attr;
+static struct{SDL_AudioSpec spec;Uint8* snd;Uint32 slen;int pos;}wave;
+static GLfloat mouseX=0.0f;
+static GLfloat mouseY=0.0f;
+static GLfloat mouseLPressed=0.0f;
+static GLfloat mouseRPressed=0.0f;
+static GLfloat viewportSizeX=0.0f;
+static GLfloat viewportSizeY=0.0f;
+GLuint vbo,vbu;
+  
+  static const char common_shader_header_gles3[]=
+"#version 300 es\n";
+static const char fragment_shader_body_gles3[]=
+"in vec4 color;out vec4 fragColor;void main(){fragColor=color;} \n";
+static const char vertex_shader_body_gles3[]=
+"in vec2 vertPos;out vec4 color;const vec4 white=vec4(1.0);const vec4 funkyColor=vec4(0.33);void main(){color=white;gl_Position=vec4(vertPos,0.0,1.0);} \n";
+static const char fragment_shader_header_gles3[]=
+" \n";
+static const char fragment_shader_footer_gles3[]=
+" \n";
+static const char* common_shader_header=common_shader_header_gles3;
+static const char* vertex_shader_body=vertex_shader_body_gles3;
+static const char* fragment_shader_header=fragment_shader_header_gles3;
+static const char* fragment_shader_footer=fragment_shader_footer_gles3;
+static const char* default_fragment_shader=fragment_shader_body_gles3;
+static GLuint shader_program;
+static GLint attrib_position;
+static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
+GLuint shader;
+GLsizei i,srclens[nsources];
+  
+  
+  
 FILE *file=fopen(filename,"r");
 if(file){
 int status=fseek(file,0,SEEK_END);
@@ -41,33 +77,6 @@ return result;
 return NULL;
 }
 
-static const char common_shader_header_gles3[]=
-"#version 300 es\n";
-
-static const char fragment_shader_body_gles3[]=
-"in vec4 color;out vec4 fragColor;void main(){fragColor=color;} \n";
-
-static const char vertex_shader_body_gles3[]=
-"in vec2 vertPos;out vec4 color;const vec4 white=vec4(1.0);const vec4 funkyColor=vec4(0.33);void main(){color=white;gl_Position=vec4(vertPos,0.0,1.0);} \n";
-
-static const char fragment_shader_header_gles3[]=
-" \n";
-
-static const char fragment_shader_footer_gles3[]=
-" \n";
-
-static const char* common_shader_header=common_shader_header_gles3;
-static const char* vertex_shader_body=vertex_shader_body_gles3;
-static const char* fragment_shader_header=fragment_shader_header_gles3;
-static const char* fragment_shader_footer=fragment_shader_footer_gles3;
-static const char* default_fragment_shader=fragment_shader_body_gles3;
-
-static GLuint shader_program;
-static GLint attrib_position;
-
-static GLuint compile_shader(GLenum type,GLsizei nsources,const char **sources){
-GLuint shader;
-GLsizei i,srclens[nsources];
 for (i=0;i<nsources;++i){
 srclens[i]=(GLsizei)strlen(sources[i]);
 }
@@ -77,20 +86,6 @@ glCompileShader(shader);
 return shader;
 }
 
-static EGLDisplay display;
-static EGLContext contextegl;
-static EGLSurface surface;
-static EmscriptenWebGLContextAttributes attr;
-static struct{SDL_AudioSpec spec;Uint8* snd;Uint32 slen;int pos;}wave;
-SDL_Window *win;
-SDL_GLContext *glCtx;
-static GLfloat mouseX=0.0f;
-static GLfloat mouseY=0.0f;
-static GLfloat mouseLPressed=0.0f;
-static GLfloat mouseRPressed=0.0f;
-static GLfloat viewportSizeX=0.0f;
-static GLfloat viewportSizeY=0.0f;
-GLuint vbo,vbu;
 
 static void renderFrame(){
 glClear(GL_COLOR_BUFFER_BIT);
@@ -126,7 +121,7 @@ white,-0.6f,
 };
 glGenBuffers(1,&vbo);
 glBindBuffer(GL_ARRAY_BUFFER,vbo);
-glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_STATIC_DRAW);
+glBufferData(GL_ARRAY_BUFFER,sizeof(vertices),vertices,GL_DYNAMIC_READ);
 glGenVertexArrays(1,&vbu);
 glBindVertexArray(vbu);
 glVertexAttribPointer(attrib_position,2,GL_FLOAT,GL_FALSE,0,0);
@@ -137,13 +132,13 @@ eglSwapBuffers(display,surface);
 }
 
 static const EGLint attribut_list[]={
-EGL_GL_COLORSPACE_KHR,EGL_GL_COLORSPACE_SRGB_KHR,
+// EGL_GL_COLORSPACE_KHR,EGL_GL_COLORSPACE_SRGB_KHR,
 EGL_NONE
 };
 
 static const EGLint attribute_list[]={
 EGL_COLOR_COMPONENT_TYPE_EXT,EGL_COLOR_COMPONENT_TYPE_FLOAT_EXT,
-EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR,EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT_KHR,
+// EGL_CONTEXT_OPENGL_PROFILE_MASK_KHR,EGL_CONTEXT_OPENGL_COMPATIBILITY_PROFILE_BIT_KHR,
 EGL_RED_SIZE,32,
 EGL_GREEN_SIZE,32,
 EGL_BLUE_SIZE,32,
@@ -179,21 +174,12 @@ glDeleteShader(vtx);
 glDeleteShader(frag);
 glReleaseShaderCompiler();
 glUseProgram(shader_program);
-SDL_GL_SetAttribute(SDL_GL_RED_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_ACCUM_RED_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_ACCUM_GREEN_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_ACCUM_BLUE_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,32);
-SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,1);
-attr.alpha=1;
-attr.stencil=0;
-attr.depth=0;
-attr.antialias=0;
-attr.premultipliedAlpha=0;
-attr.preserveDrawingBuffer=0;
+attr.alpha=EM_TRUE;
+attr.stencil=EM_TRUE;
+attr.depth=EM_TRUE;
+attr.antialias=EM_FALSE;
+attr.premultipliedAlpha=EM_FALSE;
+attr.preserveDrawingBuffer=EM_FALSE;
 emscripten_webgl_init_context_attributes(&attr);
 EMSCRIPTEN_WEBGL_CONTEXT_HANDLE ctx=emscripten_webgl_create_context("#canvas",&attr);
 EGLConfig eglconfig=NULL;
@@ -203,29 +189,23 @@ eglInitialize(display,&major,&minor);
 if(eglChooseConfig(display,attribute_list,&eglconfig,1,&config_size)==EGL_TRUE && eglconfig!=NULL){
 if(eglBindAPI(EGL_OPENGL_ES_API)!=EGL_TRUE){
 }
-EGLint anEglCtxAttribs2[]={
-EGL_CONTEXT_CLIENT_VERSION,3,
-EGL_NONE};
+EGLint anEglCtxAttribs2[]={EGL_CONTEXT_CLIENT_VERSION,3,EGL_NONE};
 contextegl=eglCreateContext(display,eglconfig,EGL_NO_CONTEXT,anEglCtxAttribs2);
-if(contextegl==EGL_NO_CONTEXT){
-}
-else{
 surface=eglCreateWindowSurface(display,eglconfig,NULL,attribut_list);
 eglMakeCurrent(display,surface,surface,contextegl);
-}}
+}
 emscripten_webgl_make_context_current(ctx);
 int h=EM_ASM_INT({return parseInt(document.getElementById('pmhig').innerHTML,10);});
-int w=h;
 win=SDL_CreateWindow("Shadertoy",SDL_WINDOWPOS_UNDEFINED,SDL_WINDOWPOS_UNDEFINED,w,h,0);
 glCtx=&contextegl;
 SDL_SetWindowTitle(win,"1ink.us - GUI");
 SDL_Log("GL_VERSION: %s",glGetString(GL_VERSION));
 SDL_Log("GLSL_VERSION: %s",glGetString(GL_SHADING_LANGUAGE_VERSION));
 SDL_Init(SDL_INIT_EVENTS);
-glViewport(0,0,w,h);
-viewportSizeX=w;
-viewportSizeY=h;
-glClearColor(0.6f,0.6f,1.0f,1.0f);
+glViewport(0,0,(float)h,(float)h);
+viewportSizeX=(float)w;
+viewportSizeY=(float)h;
+glClearColor(0.6f,1.6f,0.0f,1.0f);
 emscripten_set_main_loop((void (*)())renderFrame,0,0);
 }
 extern "C" {
